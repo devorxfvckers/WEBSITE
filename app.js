@@ -13,21 +13,21 @@ import {
   getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// UI
-const authBox = document.getElementById("authBox");
-const dashboard = document.getElementById("dashboard");
-const adminPanel = document.getElementById("adminPanel");
-
-// ✅ ADMIN EMAIL UPDATED
 const ADMIN_EMAIL = "alexjrsullera9@gmail.com";
 
-// helpers
+console.log("JS LOADED");
+
+// BUTTONS
+const signupBtn = document.getElementById("signupBtn");
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+
+// INPUTS
 const emailInput = () => document.getElementById("email");
 const passInput = () => document.getElementById("password");
 
-
-// ================= SIGN UP =================
-window.signup = async () => {
+// SIGNUP
+signupBtn?.addEventListener("click", async () => {
   try {
     const email = emailInput().value;
     const pass = passInput().value;
@@ -39,28 +39,61 @@ window.signup = async () => {
       role: email === ADMIN_EMAIL ? "admin" : "user"
     });
 
-    alert("Account created!");
+    alert("Signup successful!");
   } catch (err) {
     alert(err.message);
   }
-};
+});
 
-
-// ================= LOGIN =================
-window.login = async () => {
+// LOGIN
+loginBtn?.addEventListener("click", async () => {
   try {
     const email = emailInput().value;
     const pass = passInput().value;
 
     await signInWithEmailAndPassword(auth, email, pass);
+
+    alert("Login successful!");
+    window.location.href = "dashboard.html";
   } catch (err) {
     alert(err.message);
   }
-};
+});
 
+// LOGOUT
+logoutBtn?.addEventListener("click", async () => {
+  await signOut(auth);
+  window.location.href = "index.html";
+});
 
-// ================= LOGOUT =================
-window.logout = async () => {
+// AUTH CHECK
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return;
+
+  const ref = doc(db, "users", user.uid);
+  const snap = await getDoc(ref);
+
+  let role = "user";
+
+  if (snap.exists()) {
+    role = snap.data().role;
+  } else {
+    await setDoc(ref, {
+      email: user.email,
+      role: user.email === ADMIN_EMAIL ? "admin" : "user"
+    });
+
+    role = user.email === ADMIN_EMAIL ? "admin" : "user";
+  }
+
+  if (role === "admin") {
+    console.log("ADMIN LOGGED IN");
+    localStorage.setItem("role", "admin");
+  } else {
+    console.log("USER LOGGED IN");
+    localStorage.setItem("role", "user");
+  }
+});window.logout = async () => {
   await signOut(auth);
 };
 
