@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- LOGO -->
+  <img src="images/logo.png" class="logo" id="logo">
+
+  <h1>Dashboard App</h1>
+
+  <!-- LOGIN -->
+  <div id="authBox">
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+
+    <button onclick="signup()">Sign Up</button>
+    <button onclick="login()">Login</button>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="hidden">
+    <h2>Welcome 👋</h2>
+    <p id="userInfo"></p>
+
+    <button onclick="logout()">Logout</button>
+
+    <!-- PROFILE IMAGE -->
+    <img src="images/profile.png" class="profile">
+
+  </div>
+
+</div>
+
+<script type="module" src="app.js"></script>
+
+</body>
+</html>
