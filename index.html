@@ -1,41 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>My Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Login</title>
 </head>
-
 <body>
 
-<div class="container">
+<div>
+  <h2>Login / Signup</h2>
 
-  <!-- LOGO -->
-  <img src="images/logo.png" class="logo" id="logo">
+  <input id="email" placeholder="Email" />
+  <input id="password" type="password" placeholder="Password" />
 
-  <h1>Dashboard App</h1>
-
-  <!-- LOGIN -->
-  <div id="authBox">
-    <input id="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Password">
-
-    <button onclick="signup()">Sign Up</button>
-    <button onclick="login()">Login</button>
-  </div>
-
-  <!-- DASHBOARD -->
-  <div id="dashboard" class="hidden">
-    <h2>Welcome 👋</h2>
-    <p id="userInfo"></p>
-
-    <button onclick="logout()">Logout</button>
-
-    <!-- PROFILE IMAGE -->
-    <img src="images/profile.png" class="profile">
-
-  </div>
-
+  <button id="signupBtn">Sign Up</button>
+  <button id="loginBtn">Login</button>
 </div>
 
 <script type="module" src="app.js"></script>
