@@ -10,9 +10,7 @@ import {
 import {
   doc,
   setDoc,
-  getDoc,
-  getDocs,
-  collection
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 // UI
@@ -22,45 +20,90 @@ const adminPanel = document.getElementById("adminPanel");
 
 const ADMIN_EMAIL = "vincesarmiento051@gmail.com";
 
-// SIGN UP
+// helpers (FIXED missing inputs)
+const emailInput = () => document.getElementById("email");
+const passInput = () => document.getElementById("password");
+
+
+// ================= SIGN UP =================
 window.signup = async () => {
-  const email = emailInput().value;
-  const pass = passInput().value;
+  try {
+    const email = emailInput().value;
+    const pass = passInput().value;
 
-  const userCred = await createUserWithEmailAndPassword(auth, email, pass);
+    const userCred = await createUserWithEmailAndPassword(auth, email, pass);
 
-  await setDoc(doc(db, "users", userCred.user.uid), {
-    email,
-    role: "user"
-  });
+    // set user role
+    await setDoc(doc(db, "users", userCred.user.uid), {
+      email,
+      role: email === ADMIN_EMAIL ? "admin" : "user"
+    });
 
-  alert("Account created!");
+    alert("Account created!");
+  } catch (err) {
+    alert(err.message);
+  }
 };
 
-// LOGIN
+
+// ================= LOGIN =================
 window.login = async () => {
-  const email = emailInput().value;
-  const pass = passInput().value;
+  try {
+    const email = emailInput().value;
+    const pass = passInput().value;
 
-  await signInWithEmailAndPassword(auth, email, pass);
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch (err) {
+    alert(err.message);
+  }
 };
 
-// LOGOUT
+
+// ================= LOGOUT =================
 window.logout = async () => {
   await signOut(auth);
 };
 
-// AUTH STATE
+
+// ================= AUTH STATE =================
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     authBox.classList.remove("hidden");
     dashboard.classList.add("hidden");
+    adminPanel.classList.add("hidden");
     return;
   }
 
   authBox.classList.add("hidden");
   dashboard.classList.remove("hidden");
 
+  // 🔥 GET USER ROLE FROM FIRESTORE
+  const userRef = doc(db, "users", user.uid);
+  const userSnap = await getDoc(userRef);
+
+  let role = "user";
+
+  if (userSnap.exists()) {
+    role = userSnap.data().role;
+  } else {
+    // fallback if missing doc
+    await setDoc(userRef, {
+      email: user.email,
+      role: user.email === ADMIN_EMAIL ? "admin" : "user"
+    });
+
+    role = user.email === ADMIN_EMAIL ? "admin" : "user";
+  }
+
+  // ================= ADMIN CONTROL =================
+  if (role === "admin") {
+    adminPanel.classList.remove("hidden");
+    console.log("ADMIN LOGGED IN");
+  } else {
+    adminPanel.classList.add("hidden");
+    console.log("USER LOGGED IN");
+  }
+});
   let role = "user";
 
   const snap = await getDoc(doc(db, "users", user.uid));
