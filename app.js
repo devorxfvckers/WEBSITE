@@ -15,13 +15,14 @@ import {
   collection
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const ADMIN_EMAIL = "admin@gmail.com";
-
-const authDiv = document.getElementById("auth");
-const dash = document.getElementById("dashboard");
+// UI
+const authBox = document.getElementById("authBox");
+const dashboard = document.getElementById("dashboard");
 const adminPanel = document.getElementById("adminPanel");
 
-// SIGNUP
+const ADMIN_EMAIL = "vincesarmiento051@gmail.com";
+
+// SIGN UP
 window.signup = async () => {
   const email = emailInput().value;
   const pass = passInput().value;
@@ -30,37 +31,80 @@ window.signup = async () => {
 
   await setDoc(doc(db, "users", userCred.user.uid), {
     email,
-    role: email === ADMIN_EMAIL ? "admin" : "user"
+    role: "user"
   });
+
+  alert("Account created!");
 };
 
 // LOGIN
 window.login = async () => {
-  await signInWithEmailAndPassword(auth, emailInput().value, passInput().value);
+  const email = emailInput().value;
+  const pass = passInput().value;
+
+  await signInWithEmailAndPassword(auth, email, pass);
 };
 
 // LOGOUT
-window.logout = () => signOut(auth);
+window.logout = async () => {
+  await signOut(auth);
+};
 
 // AUTH STATE
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    authDiv.classList.remove("hidden");
-    dash.classList.add("hidden");
+    authBox.classList.remove("hidden");
+    dashboard.classList.add("hidden");
     return;
   }
 
-  authDiv.classList.add("hidden");
-  dash.classList.remove("hidden");
+  authBox.classList.add("hidden");
+  dashboard.classList.remove("hidden");
+
+  let role = "user";
 
   const snap = await getDoc(doc(db, "users", user.uid));
-  const role = snap.exists() ? snap.data().role : "user";
+  if (snap.exists()) {
+    role = snap.data().role;
+  }
 
   document.getElementById("userInfo").innerText =
     `Logged in: ${user.email} (${role})`;
 
-  if (role === "admin") {
+  // AUTO ADMIN DETECT
+  if (user.email === ADMIN_EMAIL) {
     adminPanel.classList.remove("hidden");
+
+    // force admin role in DB if not exists
+    await setDoc(doc(db, "users", user.uid), {
+      email: user.email,
+      role: "admin"
+    });
+  }
+});
+
+// LOAD USERS (ADMIN)
+window.loadUsers = async () => {
+  const snap = await getDocs(collection(db, "users"));
+
+  let html = "";
+
+  snap.forEach((docItem) => {
+    const data = docItem.data();
+    html += `<p>${data.email} - ${data.role}</p>`;
+  });
+
+  document.getElementById("users").innerHTML = html;
+};
+
+// HELPERS
+function emailInput() {
+  return document.getElementById("email");
+}
+
+function passInput() {
+  return document.getElementById("password");
+}    adminPanel.classList.remove("hidden");
   }
 });
 
