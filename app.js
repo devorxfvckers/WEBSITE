@@ -18,9 +18,10 @@ const authBox = document.getElementById("authBox");
 const dashboard = document.getElementById("dashboard");
 const adminPanel = document.getElementById("adminPanel");
 
-const ADMIN_EMAIL = "vincesarmiento051@gmail.com";
+// ✅ ADMIN EMAIL UPDATED
+const ADMIN_EMAIL = "alexjrsullera9@gmail.com";
 
-// helpers (FIXED missing inputs)
+// helpers
 const emailInput = () => document.getElementById("email");
 const passInput = () => document.getElementById("password");
 
@@ -33,7 +34,6 @@ window.signup = async () => {
 
     const userCred = await createUserWithEmailAndPassword(auth, email, pass);
 
-    // set user role
     await setDoc(doc(db, "users", userCred.user.uid), {
       email,
       role: email === ADMIN_EMAIL ? "admin" : "user"
@@ -63,6 +63,45 @@ window.login = async () => {
 window.logout = async () => {
   await signOut(auth);
 };
+
+
+// ================= AUTH STATE =================
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    authBox.classList.remove("hidden");
+    dashboard.classList.add("hidden");
+    adminPanel.classList.add("hidden");
+    return;
+  }
+
+  authBox.classList.add("hidden");
+  dashboard.classList.remove("hidden");
+
+  const userRef = doc(db, "users", user.uid);
+  const userSnap = await getDoc(userRef);
+
+  let role = "user";
+
+  if (userSnap.exists()) {
+    role = userSnap.data().role;
+  } else {
+    await setDoc(userRef, {
+      email: user.email,
+      role: user.email === ADMIN_EMAIL ? "admin" : "user"
+    });
+
+    role = user.email === ADMIN_EMAIL ? "admin" : "user";
+  }
+
+  // ================= ADMIN CONTROL =================
+  if (role === "admin") {
+    adminPanel.classList.remove("hidden");
+    console.log("ADMIN LOGGED IN");
+  } else {
+    adminPanel.classList.add("hidden");
+    console.log("USER LOGGED IN");
+  }
+});};
 
 
 // ================= AUTH STATE =================
