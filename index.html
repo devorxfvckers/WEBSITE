@@ -1,21 +1,89 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Login</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login System</title>
+
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<div>
-  <h2>Login / Signup</h2>
+<!-- 🔐 LOGIN -->
+<div class="container" id="loginBox">
+  <h2>Login</h2>
 
-  <input id="email" placeholder="Email" />
-  <input id="password" type="password" placeholder="Password" />
+  <input type="text" id="loginUser" placeholder="Username">
+  <input type="password" id="loginPass" placeholder="Password">
 
-  <button id="signupBtn">Sign Up</button>
-  <button id="loginBtn">Login</button>
+  <button onclick="login()">Login</button>
+
+  <p>Don't have an account? <a onclick="showSignup()">Signup</a></p>
 </div>
 
-<script type="module" src="app.js"></script>
+<!-- 🆕 SIGNUP -->
+<div class="container hidden" id="signupBox">
+  <h2>Signup</h2>
+
+  <input type="text" id="signupUser" placeholder="Username">
+  <input type="password" id="signupPass" placeholder="Password">
+
+  <button onclick="signup()">Create Account</button>
+
+  <p>Already have an account? <a onclick="showLogin()">Login</a></p>
+</div>
+
+<!-- 📊 DASHBOARD -->
+<div class="container hidden" id="dashboard">
+  <h2>Welcome</h2>
+  <p id="welcomeUser"></p>
+
+  <button onclick="logout()">Logout</button>
+</div>
+
+<script>
+function signup() {
+  let user = document.getElementById("signupUser").value;
+  let pass = document.getElementById("signupPass").value;
+
+  if (!user || !pass) return alert("Fill all fields");
+
+  localStorage.setItem("user_" + user, pass);
+
+  alert("Account created!");
+  showLogin();
+}
+
+function login() {
+  let user = document.getElementById("loginUser").value;
+  let pass = document.getElementById("loginPass").value;
+
+  let savedPass = localStorage.getItem("user_" + user);
+
+  if (savedPass === pass) {
+    document.getElementById("loginBox").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+    document.getElementById("welcomeUser").innerText = "Hello " + user;
+  } else {
+    alert("Invalid login");
+  }
+}
+
+function logout() {
+  location.reload();
+}
+
+function showSignup() {
+  document.getElementById("loginBox").classList.add("hidden");
+  document.getElementById("signupBox").classList.remove("hidden");
+}
+
+function showLogin() {
+  document.getElementById("signupBox").classList.add("hidden");
+  document.getElementById("loginBox").classList.remove("hidden");
+}
+</script>
 
 </body>
 </html>
