@@ -1,60 +1,58 @@
-/* 🌌 BACKGROUND (CHANGE THIS IMAGE ANYTIME) */
+/* 🌌 BACKGROUND */
 body {
   margin: 0;
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   color: white;
 
-  background: url("https://images.unsplash.com/photo-1503264116251-35a269479413");
+  background: url("https://images.unsplash.com/photo-1503264116251-35a269479413") no-repeat center center fixed;
   background-size: cover;
-  background-position: center;
 }
 
-/* 🔲 MAIN BOX */
+/* 🔲 BOX */
 .container {
-  width: 320px;
-  margin: 100px auto;
+  width: 90%;
+  max-width: 350px;
+  margin: 80px auto;
   background: rgba(0,0,0,0.7);
   padding: 20px;
   border-radius: 15px;
   text-align: center;
+  backdrop-filter: blur(8px);
 }
 
-/* 🖼 LOGO */
-.logo {
-  width: 80px;
-  margin-bottom: 10px;
-}
-
-/* 👤 PROFILE IMAGE */
-.profile {
-  width: 100px;
-  border-radius: 50%;
-  margin-top: 15px;
-}
-
-/* INPUTS */
+/* INPUT */
 input {
-  width: 90%;
-  padding: 10px;
-  margin: 5px 0;
-}
-
-/* BUTTONS */
-button {
   width: 95%;
   padding: 10px;
-  margin: 5px 0;
+  margin: 6px 0;
+  border: none;
+  border-radius: 8px;
+  outline: none;
+}
+
+/* BUTTON */
+button {
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0;
   background: #3b82f6;
   border: none;
   color: white;
   cursor: pointer;
+  border-radius: 8px;
 }
 
 button:hover {
   background: #2563eb;
 }
 
-/* HIDE ELEMENTS */
+/* LINK */
+a {
+  color: #60a5fa;
+  cursor: pointer;
+}
+
+/* HIDE */
 .hidden {
   display: none;
 }
